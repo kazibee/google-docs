@@ -1,0 +1,74 @@
+Tool: google-docs
+Package: @kazibee/google-docs
+
+Use this tool for Google Docs creation and text editing operations.
+
+Auth requirements
+- CLIENT_ID
+- CLIENT_SECRET
+- REFRESH_TOKEN
+- If auth fails, instruct user to run: kazibee google-docs login
+
+Typical intents to map
+- "create doc" -> createDocument(title)
+- "get doc metadata" -> getDocument(documentId)
+- "read full text" -> getDocumentText(documentId)
+- "inspect structure" -> getDocumentStructure(documentId)
+- "append/insert text" -> appendText(...) or insertText(documentId, text, index?)
+- "insert heading/list/table" -> insertHeading / insertBulletList / insertTable
+- "find and replace" -> replaceAllText(documentId, findText, replaceText)
+- "multi replace" -> replaceAllTextBatch(documentId, replacements)
+- "find text ranges" -> findTextRanges(documentId, query, matchCase?)
+- "style text/paragraph" -> applyTextStyle / applyParagraphStyle
+- "stable anchors" -> createNamedRange / replaceNamedRange
+- "advanced edits" -> safeBatchUpdate(documentId, requests)
+
+Code call examples
+```ts
+const doc = await tools["google-docs"].createDocument("Weekly Notes");
+const info = await tools["google-docs"].getDocument(doc.documentId);
+const structure = await tools["google-docs"].getDocumentStructure(doc.documentId);
+
+await tools["google-docs"].insertHeading(doc.documentId, "Weekly Notes", 1);
+await tools["google-docs"].insertBulletList(doc.documentId, [
+  "Ship release",
+  "Review metrics",
+]);
+await tools["google-docs"].insertTable(doc.documentId, 3, 3);
+await tools["google-docs"].appendText(doc.documentId, "\nSummary complete.\n");
+
+await tools["google-docs"].replaceAllTextBatch(doc.documentId, [
+  { findText: "release", replaceText: "release v1" },
+  { findText: "metrics", replaceText: "KPIs" },
+]);
+
+const text = await tools["google-docs"].getDocumentText(doc.documentId);
+const ranges = await tools["google-docs"].findTextRanges(doc.documentId, "Summary");
+
+await tools["google-docs"].applyTextStyle(
+  doc.documentId,
+  { startIndex: ranges[0].startIndex, endIndex: ranges[0].endIndex },
+  { bold: true, linkUrl: "https://example.com/report" }
+);
+
+await tools["google-docs"].createNamedRange(
+  doc.documentId,
+  "status_block",
+  { startIndex: 1, endIndex: 20 }
+);
+await tools["google-docs"].replaceNamedRange(doc.documentId, "status_block", "Status: On Track\n");
+
+await tools["google-docs"].safeBatchUpdate(doc.documentId, [
+  {
+    insertText: {
+      location: { index: 1 },
+      text: "Title\n",
+    },
+  },
+]);
+```
+
+Output behavior
+- Return concise structured results.
+- Always include documentId in responses for follow-up actions.
+- Confirm mutation outcomes.
