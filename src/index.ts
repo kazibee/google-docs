@@ -12,6 +12,18 @@ export type {
   TextStyleInput,
   ParagraphStyleInput,
 } from './docs-client';
+export type { TableCellLocation, TableRange, TableCellStyleInput } from './table-ops';
+export type { ImageSize } from './media-ops';
+export type { DocumentStyleInput, SectionStyleInput } from './style-content-ops';
+export { ShadowDocument } from './shadow-document';
+export type {
+  ShadowNode,
+  ParagraphNode,
+  TableNode,
+  SectionBreakNode,
+  PendingChange,
+} from './shadow-document';
+export { compileRequests } from './request-compiler';
 
 export default function main(env: Env) {
   const auth = createAuthClient(env);

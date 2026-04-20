@@ -1,7 +1,7 @@
 Tool: google-docs
 Package: @kazibee/google-docs
 
-Use this tool for Google Docs creation and text editing operations.
+Use this tool for Google Docs creation, text editing, formatting, table manipulation, image insertion, headers/footers, and document styling.
 
 Auth requirements
 - CLIENT_ID
@@ -20,44 +20,210 @@ Typical intents to map
 - "multi replace" -> replaceAllTextBatch(documentId, replacements)
 - "find text ranges" -> findTextRanges(documentId, query, matchCase?)
 - "style text/paragraph" -> applyTextStyle / applyParagraphStyle
+- "link" / "add link" / "hyperlink" -> When a user says "link", they almost always mean a clickable hyperlink, NOT pasting a raw URL. Insert the display text with insertText, find it with findTextRanges, then apply the hyperlink with applyTextStyle(docId, range, { linkUrl: "..." }). Never just insert the URL as plain text unless explicitly asked.
 - "stable anchors" -> createNamedRange / replaceNamedRange
+- "insert image" -> insertInlineImage(documentId, uri, width?, height?, index?)
+- "replace image" -> replaceImage(documentId, imageObjectId, uri)
+- "delete floating object" -> deletePositionedObject(documentId, objectId)
+- "add header/footer" -> createHeader / createFooter
+- "remove header/footer" -> deleteHeader / deleteFooter
+- "add footnote" -> createFootnote(documentId, index?)
+- "add/remove table row" -> insertTableRow / deleteTableRow
+- "add/remove table column" -> insertTableColumn / deleteTableColumn
+- "merge/unmerge cells" -> mergeTableCells / unmergeTableCells
+- "style table cells" -> updateTableCellStyle(documentId, range, style)
+- "set column width" -> updateTableColumnProperties(documentId, tableStartIndex, columnIndices, widthPt)
+- "set row height" -> updateTableRowStyle(documentId, tableStartIndex, rowIndices, minHeightPt)
+- "pin header rows" -> pinTableHeaderRows(documentId, tableStartIndex, pinnedCount)
+- "page margins/size" -> updateDocumentStyle(documentId, style)
+- "landscape mode" -> updateDocumentStyle(documentId, { landscape: true })
+- "section break" -> insertSectionBreak(documentId, type?, index?)
+- "section columns" -> updateSectionStyle(documentId, range, { columnCount: 2 })
+- "delete content" -> deleteContentRange(documentId, range)
+- "remove bullets" -> deleteParagraphBullets(documentId, range)
+- "delete named range" -> deleteNamedRange(documentId, namedRangeId)
+- "add tab" -> addDocumentTab(documentId, title?)
+- "delete tab" -> deleteTab(documentId, tabId)
+- "@mention person" -> insertPerson(documentId, email, index?)
 - "advanced edits" -> safeBatchUpdate(documentId, requests)
 
 Code call examples
+
+Document basics
 ```ts
 const doc = await tools["google-docs"].createDocument("Weekly Notes");
 const info = await tools["google-docs"].getDocument(doc.documentId);
+const text = await tools["google-docs"].getDocumentText(doc.documentId);
 const structure = await tools["google-docs"].getDocumentStructure(doc.documentId);
+```
 
+Text insertion
+```ts
 await tools["google-docs"].insertHeading(doc.documentId, "Weekly Notes", 1);
 await tools["google-docs"].insertBulletList(doc.documentId, [
   "Ship release",
   "Review metrics",
 ]);
-await tools["google-docs"].insertTable(doc.documentId, 3, 3);
 await tools["google-docs"].appendText(doc.documentId, "\nSummary complete.\n");
+await tools["google-docs"].insertPageBreak(doc.documentId);
+```
 
+Find and replace
+```ts
 await tools["google-docs"].replaceAllTextBatch(doc.documentId, [
   { findText: "release", replaceText: "release v1" },
   { findText: "metrics", replaceText: "KPIs" },
 ]);
-
-const text = await tools["google-docs"].getDocumentText(doc.documentId);
 const ranges = await tools["google-docs"].findTextRanges(doc.documentId, "Summary");
+```
 
+Text and paragraph styling
+```ts
 await tools["google-docs"].applyTextStyle(
   doc.documentId,
   { startIndex: ranges[0].startIndex, endIndex: ranges[0].endIndex },
   { bold: true, linkUrl: "https://example.com/report" }
 );
-
-await tools["google-docs"].createNamedRange(
+await tools["google-docs"].applyParagraphStyle(
   doc.documentId,
-  "status_block",
-  { startIndex: 1, endIndex: 20 }
+  { startIndex: 1, endIndex: 50 },
+  { alignment: "CENTER", lineSpacing: 150 }
+);
+```
+
+Named ranges
+```ts
+await tools["google-docs"].createNamedRange(
+  doc.documentId, "status_block", { startIndex: 1, endIndex: 20 }
 );
 await tools["google-docs"].replaceNamedRange(doc.documentId, "status_block", "Status: On Track\n");
+await tools["google-docs"].deleteNamedRange(doc.documentId, "namedRangeId123");
+```
 
+Images
+```ts
+await tools["google-docs"].insertInlineImage(
+  doc.documentId, "https://example.com/logo.png", 200, 100
+);
+await tools["google-docs"].insertInlineImage(
+  doc.documentId, "https://example.com/chart.png"
+);
+await tools["google-docs"].replaceImage(doc.documentId, "imageObjectId", "https://example.com/new.png");
+await tools["google-docs"].deletePositionedObject(doc.documentId, "objectId");
+```
+
+Headers, footers, and footnotes
+```ts
+await tools["google-docs"].createHeader(doc.documentId);
+await tools["google-docs"].createFooter(doc.documentId);
+await tools["google-docs"].deleteHeader(doc.documentId, "headerId");
+await tools["google-docs"].deleteFooter(doc.documentId, "footerId");
+await tools["google-docs"].createFootnote(doc.documentId, 25);
+```
+
+Table creation and manipulation
+```ts
+await tools["google-docs"].insertTable(doc.documentId, 3, 3);
+
+// Get table start index from getDocumentStructure()
+const tableStart = 10;
+
+await tools["google-docs"].insertTableRow(
+  doc.documentId,
+  { tableStartIndex: tableStart, rowIndex: 1, columnIndex: 0 },
+  true // insert below
+);
+await tools["google-docs"].insertTableColumn(
+  doc.documentId,
+  { tableStartIndex: tableStart, rowIndex: 0, columnIndex: 1 },
+  true // insert right
+);
+await tools["google-docs"].deleteTableRow(
+  doc.documentId,
+  { tableStartIndex: tableStart, rowIndex: 2, columnIndex: 0 }
+);
+await tools["google-docs"].deleteTableColumn(
+  doc.documentId,
+  { tableStartIndex: tableStart, rowIndex: 0, columnIndex: 3 }
+);
+
+// Merge cells (2 rows x 2 cols starting at row 0, col 0)
+await tools["google-docs"].mergeTableCells(doc.documentId, {
+  location: { tableStartIndex: tableStart, rowIndex: 0, columnIndex: 0 },
+  rowSpan: 2,
+  columnSpan: 2,
+});
+await tools["google-docs"].unmergeTableCells(doc.documentId, {
+  location: { tableStartIndex: tableStart, rowIndex: 0, columnIndex: 0 },
+  rowSpan: 2,
+  columnSpan: 2,
+});
+
+// Style cells
+await tools["google-docs"].updateTableCellStyle(
+  doc.documentId,
+  {
+    location: { tableStartIndex: tableStart, rowIndex: 0, columnIndex: 0 },
+    rowSpan: 1,
+    columnSpan: 3,
+  },
+  { backgroundColor: "#4285F4", contentAlignment: "MIDDLE", paddingTop: 4 }
+);
+
+// Column widths and row heights
+await tools["google-docs"].updateTableColumnProperties(doc.documentId, tableStart, [0, 1], 150);
+await tools["google-docs"].updateTableRowStyle(doc.documentId, tableStart, [0], 40);
+await tools["google-docs"].pinTableHeaderRows(doc.documentId, tableStart, 1);
+```
+
+Document styling
+```ts
+await tools["google-docs"].updateDocumentStyle(doc.documentId, {
+  marginTop: 72,
+  marginBottom: 72,
+  marginLeft: 72,
+  marginRight: 72,
+});
+await tools["google-docs"].updateDocumentStyle(doc.documentId, { landscape: true });
+await tools["google-docs"].updateDocumentStyle(doc.documentId, {
+  pageWidth: 595,
+  pageHeight: 842, // A4 in PT
+});
+await tools["google-docs"].updateDocumentStyle(doc.documentId, {
+  background: { red: 0.95, green: 0.95, blue: 0.95 },
+});
+```
+
+Sections
+```ts
+await tools["google-docs"].insertSectionBreak(doc.documentId, "NEXT_PAGE");
+await tools["google-docs"].insertSectionBreak(doc.documentId, "CONTINUOUS", 50);
+await tools["google-docs"].updateSectionStyle(
+  doc.documentId,
+  { startIndex: 1, endIndex: 100 },
+  { columnCount: 2 }
+);
+```
+
+Content deletion
+```ts
+await tools["google-docs"].deleteContentRange(doc.documentId, { startIndex: 10, endIndex: 50 });
+await tools["google-docs"].deleteParagraphBullets(doc.documentId, { startIndex: 10, endIndex: 50 });
+```
+
+Tabs
+```ts
+await tools["google-docs"].addDocumentTab(doc.documentId, "Appendix");
+await tools["google-docs"].deleteTab(doc.documentId, "tabId123");
+```
+
+Person mentions
+```ts
+await tools["google-docs"].insertPerson(doc.documentId, "user@example.com", 25);
+```
+
+Raw batch update
+```ts
 await tools["google-docs"].safeBatchUpdate(doc.documentId, [
   {
     insertText: {

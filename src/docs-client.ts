@@ -1,5 +1,10 @@
 import { docs as createDocs, type docs_v1 } from '@googleapis/docs';
 import type { OAuth2Client } from 'google-auth-library';
+import { createTableOps } from './table-ops';
+import { createMediaOps } from './media-ops';
+import { createStyleContentOps } from './style-content-ops';
+import { ShadowDocument } from './shadow-document';
+import { compileRequests } from './request-compiler';
 
 type DocsAPI = docs_v1.Docs;
 
@@ -183,6 +188,40 @@ export function createDocsClient(auth: OAuth2Client) {
      */
     safeBatchUpdate: (documentId: string, requests: docs_v1.Schema$Request[]) =>
       safeBatchUpdate(docs, documentId, requests),
+
+    /**
+     * Opens a document and returns a mutable ShadowDocument for offline editing.
+     */
+    openDocument: async (documentId: string): Promise<ShadowDocument> => {
+      const structure = await getDocumentStructure(docs, documentId);
+      return ShadowDocument.fromStructure(structure);
+    },
+
+    /**
+     * Returns a plain-text preview of the shadow document's current state.
+     */
+    previewChanges: (shadow: ShadowDocument): string => shadow.render(),
+
+    /**
+     * Returns a before/after diff of pending changes in the shadow document.
+     */
+    diffChanges: (shadow: ShadowDocument): string => shadow.diff(),
+
+    /**
+     * Compiles pending shadow changes into API requests, sends them, then
+     * clears the pending changes. Callers should use openDocument() again
+     * to obtain a fresh shadow that reflects the remote state.
+     */
+    commitChanges: async (shadow: ShadowDocument): Promise<BatchUpdateResult> => {
+      const requests = compileRequests([...shadow.getPendingChanges()]);
+      const result = await batchUpdate(docs, shadow.documentId, requests);
+      shadow.clearPendingChanges();
+      return result;
+    },
+
+    ...createTableOps(docs),
+    ...createMediaOps(docs),
+    ...createStyleContentOps(docs),
   };
 }
 

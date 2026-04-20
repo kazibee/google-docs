@@ -4,6 +4,9 @@
   "type": "module",
   "main": "./src/index.ts",
   "command": "./src/command.ts",
+  "kazibee": {
+    "description": "Create and edit Google Docs with text, styling, tables, and offline editing support."
+  },
   "dependencies": {
     "@googleapis/docs": "^4.0.1"
   },
