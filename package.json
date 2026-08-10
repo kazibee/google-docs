@@ -5,7 +5,10 @@
   "main": "./src/index.ts",
   "command": "./src/command.ts",
   "kazibee": {
-    "description": "Create and edit Google Docs with text, styling, tables, and offline editing support."
+    "description": "Create and edit Google Docs with text, styling, tables, and offline editing support.",
+    "commands": {
+      "login": { "description": "Run the OAuth2 browser login flow to obtain and store Google credentials" }
+    }
   },
   "dependencies": {
     "@googleapis/docs": "^4.0.1"
