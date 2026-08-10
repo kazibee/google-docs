@@ -1,0 +1,4 @@
+{
+  "net": ["www.googleapis.com", "oauth2.googleapis.com", "docs.googleapis.com"],
+  "env": ["CLIENT_ID", "CLIENT_SECRET", "REFRESH_TOKEN"]
+}

@@ -48,6 +48,14 @@ Typical intents to map
 - "advanced edits" -> safeBatchUpdate(documentId, requests)
 
 Code call examples
+Every sandbox module must use this entry-point shape:
+```ts
+export default async function ({ tools }) {
+  const docs = tools["google-docs"];
+  const doc = await docs.createDocument("Weekly Notes");
+  return doc;
+}
+```
 
 Document basics
 ```ts
