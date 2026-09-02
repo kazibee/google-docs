@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "validator": {
+    "name": "kazibee",
+    "version": "1"
+  },
+  "package": {
+    "id": "google-docs",
+    "name": "@kazibee/google-docs",
+    "version": "0.1.0"
+  },
+  "artifacts": {
+    "entry": "src/index.ts",
+    "declaration": ".kazibee/index.d.ts",
+    "manual": "llm.txt",
+    "permissions": "permissions.json",
+    "command": "src/command.ts"
+  },
+  "files": [
+    {
+      "path": ".kazibee/index.d.ts",
+      "role": "declaration",
+      "bytes": 11060,
+      "sha256": "91d32393527234b191731f56d71e26623d15f868ddf649553c78cc84475b09b2"
+    },
+    {
+      "path": "llm.txt",
+      "role": "manual",
+      "bytes": 9007,
+      "sha256": "37dedf9ba97225ce4fd0908cbb2f549a9007a73bdbe6e2e4a4f309110f856162"
+    },
+    {
+      "path": "package.json",
+      "role": "manifest",
+      "bytes": 1142,
+      "sha256": "84887effb77fe91f82fdb7fae36484305c3592e7d1a4f9e219e0ee191c5aede7"
+    },
+    {
+      "path": "permissions.json",
+      "role": "permissions",
+      "bytes": 631,
+      "sha256": "c337299db410810dd712aa456028cc724a31a65821af534a6ba225b21d8836b6"
+    },
+    {
+      "path": "src/auth.ts",
+      "role": "source",
+      "bytes": 354,
+      "sha256": "c3dc1f4db6b1ca5bf90dadd6de76a96b7e1f48cc375a8ba976ab2daee535200f"
+    },
+    {
+      "path": "src/command.ts",
+      "role": "command",
+      "bytes": 4045,
+      "sha256": "a6999698d225f179f514f7b1e8a1890e63d7e1554c66e08ad8dccd7a38c329b0"
+    },
+    {
+      "path": "src/docs-client.ts",
+      "role": "source",
+      "bytes": 21075,
+      "sha256": "c2be9407d9f2fb407243ee848edb524559aad8cce1133838634cd1ec962248c6"
+    },
+    {
+      "path": "src/index.ts",
+      "role": "source",
+      "bytes": 886,
+      "sha256": "5ad5ec5a570959ed32781b87d4b94c0752916593f61972262fa0779838b0e32f"
+    },
+    {
+      "path": "src/media-ops.ts",
+      "role": "source",
+      "bytes": 7940,
+      "sha256": "761e0e9e11ccc64d82e7a31df20911a1408b641b085ce380498900ccb7437c45"
+    },
+    {
+      "path": "src/request-compiler.ts",
+      "role": "source",
+      "bytes": 3578,
+      "sha256": "afa3cb738c3c5549a5e8cf7a23129d8a462761a3ed64354966443d77c09f3ea2"
+    },
+    {
+      "path": "src/shadow-document.ts",
+      "role": "source",
+      "bytes": 15097,
+      "sha256": "bf4549c514d43357865be226a678a9a6c7bec50140de437a75ec357fd2b0f2c2"
+    },
+    {
+      "path": "src/style-content-ops.ts",
+      "role": "source",
+      "bytes": 12271,
+      "sha256": "d175502d7dc1a1af6cb95bcc0bcbe0f80cc0e04af1efed95f860e07976978409"
+    },
+    {
+      "path": "src/table-ops.ts",
+      "role": "source",
+      "bytes": 12848,
+      "sha256": "3f17b5c5bc97eaa3165d259f6b0a5fdc8eaaeb27c7689fc837623f90d14f6b2f"
+    }
+  ],
+  "contentDigest": "e2395407e319c30b18bbe1ab137ee7d6358eec57124d03b7ca4e094ab0ee5043"
+}

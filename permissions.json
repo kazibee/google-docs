@@ -1,4 +1,21 @@
 {
-  "net": ["www.googleapis.com", "oauth2.googleapis.com", "docs.googleapis.com"],
-  "env": ["CLIENT_ID", "CLIENT_SECRET", "REFRESH_TOKEN"]
+  "net": [
+    "www.googleapis.com",
+    "oauth2.googleapis.com",
+    "docs.googleapis.com"
+  ],
+  "env": {
+    "CLIENT_ID": "CLIENT_ID",
+    "CLIENT_SECRET": "CLIENT_SECRET",
+    "REFRESH_TOKEN": "REFRESH_TOKEN"
+  },
+  "methods": {
+    "getDocument": { "read": true, "write": false },
+    "getDocumentText": { "read": true, "write": false },
+    "getDocumentStructure": { "read": true, "write": false },
+    "findTextRanges": { "read": true, "write": false },
+    "openDocument": { "read": true, "write": false },
+    "previewChanges": { "read": true, "write": false },
+    "diffChanges": { "read": true, "write": false }
+  }
 }

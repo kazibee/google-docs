@@ -251,8 +251,8 @@ declare function main(env: Env): {
 	batchUpdate: (documentId: string, requests: import("@googleapis/docs").docs_v1.Schema$Request[]) => Promise<BatchUpdateResult>;
 	safeBatchUpdate: (documentId: string, requests: import("@googleapis/docs").docs_v1.Schema$Request[]) => Promise<BatchUpdateResult>;
 	openDocument: (documentId: string) => Promise<ShadowDocument>;
-	previewChanges: (shadow: ShadowDocument) => Promise<string>;
-	diffChanges: (shadow: ShadowDocument) => Promise<string>;
+	previewChanges: (shadow: ShadowDocument) => string;
+	diffChanges: (shadow: ShadowDocument) => string;
 	commitChanges: (shadow: ShadowDocument) => Promise<BatchUpdateResult>;
 };
 

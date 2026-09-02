@@ -1,13 +1,36 @@
 {
   "name": "@kazibee/google-docs",
   "version": "0.1.0",
+  "description": "Create and edit Google Docs with text, styling, tables, and offline editing support.",
   "type": "module",
   "main": "./src/index.ts",
+  "types": "./.kazibee/index.d.ts",
   "command": "./src/command.ts",
   "kazibee": {
+    "manifestVersion": 1,
+    "id": "google-docs",
     "description": "Create and edit Google Docs with text, styling, tables, and offline editing support.",
+    "brief": "Create, inspect, and edit Google Docs with structured text, styles, tables, images, and document controls.",
+    "tags": [
+      "google",
+      "docs",
+      "documents",
+      "writing",
+      "editing",
+      "formatting",
+      "tables",
+      "images"
+    ],
+    "manual": "./llm.txt",
+    "permissions": "./permissions.json",
+    "auth": {
+      "type": "oauth2",
+      "setupCommand": "login"
+    },
     "commands": {
-      "login": { "description": "Run the OAuth2 browser login flow to obtain and store Google credentials" }
+      "login": {
+        "description": "Run the OAuth2 browser login flow to obtain and store Google credentials"
+      }
     }
   },
   "dependencies": {
