@@ -7,7 +7,7 @@ Auth requirements
 - CLIENT_ID
 - CLIENT_SECRET
 - REFRESH_TOKEN
-- If auth fails, instruct user to run: kazibee google-docs login
+- If auth fails, ask the user to run the login command in Settings → Tools → google-docs → Commands.
 
 Typical intents to map
 - "create doc" -> createDocument(title)

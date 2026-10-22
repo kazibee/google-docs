@@ -19,7 +19,7 @@ export async function login(env: Record<string, string>, ...args: string[]): Pro
   if (args.includes('--help')) {
     console.log([
       '',
-      `Usage: kazibee <tool-name> login [CLIENT_ID CLIENT_SECRET]`,
+      'Usage: login [CLIENT_ID CLIENT_SECRET]  (Settings → Tools → google-docs → Commands)',
       '',
       'Runs the OAuth2 browser login flow to obtain a refresh token.',
       '',
@@ -31,7 +31,7 @@ export async function login(env: Record<string, string>, ...args: string[]): Pro
       '  5. Stores CLIENT_ID, CLIENT_SECRET, and REFRESH_TOKEN as tool env vars',
       '',
       'Options:',
-      '  CLIENT_ID CLIENT_SECRET   Use custom OAuth app credentials instead of defaults',
+      '  CLIENT_ID CLIENT_SECRET   OAuth app credentials (default: the extension\'s Environment values)',
       '  --help                    Show this help message',
       '',
     ].join('\n'));
@@ -44,8 +44,8 @@ export async function login(env: Record<string, string>, ...args: string[]): Pro
 
   if (!CLIENT_ID || !CLIENT_SECRET) {
     throw new Error(
-      'Missing CLIENT_ID or CLIENT_SECRET. Provide them as arguments or ensure they are set in the system env.\n' +
-      'Usage: kazibee <tool-name> login [CLIENT_ID CLIENT_SECRET]'
+      'Missing CLIENT_ID or CLIENT_SECRET. Pass them as login arguments or set them in Settings → Tools → google-docs → Environment.\n' +
+      'Usage: login [CLIENT_ID CLIENT_SECRET]'
     );
   }
 
